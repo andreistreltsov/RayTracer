@@ -17,6 +17,11 @@ public readonly struct Color
         return c * t;
     }
 
+    public static Color operator *(Color c1, Color c2)
+    {
+        return new Color(c1.R * c2.R, c1.G * c2.G, c1.B * c2.B);
+    }
+
     public static Color operator +(Color c1, Color c2)
     {
         return new Color(c1.R + c2.R, c1.G + c2.G, c1.B + c2.B);
@@ -25,6 +30,11 @@ public readonly struct Color
     public static Color operator /(Color c, double t)
     {
         return c * (1 / t);
+    }
+
+    public Color GammaCorrect2()
+    {
+        return new Color(Math.Sqrt(R), Math.Sqrt(G), Math.Sqrt(B));
     }
     
 }

@@ -3,12 +3,14 @@ namespace RTIOW;
 internal class Sphere: Entity
 {
     private readonly Vector center;
+    private readonly Material material;
     private readonly double radius;
 
-    public Sphere(Vector center, double radius)
+    public Sphere(Vector center, double radius, Material material)
     {
         this.center = center;
         this.radius = radius;
+        this.material = material;
     }
     
     public override HitResult ComputeHit(Ray r, double minDistance, double maxDistance)
@@ -40,7 +42,8 @@ internal class Sphere: Entity
         return new HitResult.Hit(hitPoint, 
             isFrontFace ? outwardNormal : -outwardNormal, 
             distanceToHitPoint, 
-            isFrontFace);
+            isFrontFace,
+            material);
         
     }
 }

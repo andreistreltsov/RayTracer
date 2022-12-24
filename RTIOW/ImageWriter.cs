@@ -24,6 +24,7 @@ class ImageWriter
 
     public void WritePixel(Color pixel)
     {
+        pixel = pixel.GammaCorrect2(); 
         Console.WriteLine($"{(int)((MaxColor+1)*Clamp(pixel.R))} {(int)((MaxColor+1)*Clamp(pixel.G))} {(int)((MaxColor+1) * Clamp(pixel.B))}");
     }
 }

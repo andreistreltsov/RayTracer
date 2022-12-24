@@ -4,7 +4,7 @@ public record HitResult
 {
     public record Miss : HitResult;
 
-    public record Hit(Vector HitPoint, Vector Normal, double Distance, bool IsFrontFace) : HitResult;
+    public record Hit(Vector HitPoint, Vector Normal, double Distance, bool IsFrontFace, Material material) : HitResult;
 
     private HitResult()
     {

@@ -6,6 +6,8 @@ public readonly struct Vector
     public readonly double Y;
     public readonly double Z;
 
+    private static Random random = new Random();
+
     public Vector(double x, double y, double z) => (X, Y, Z) = (x, y, z);
 
     public static Vector Zero()
@@ -43,9 +45,21 @@ public readonly struct Vector
         return v * (1 / t);
     }
 
+    public static Vector Random()
+    {
+        return new Vector(random.NextDouble() * 2 - 1,
+            random.NextDouble() * 2 - 1,
+            random.NextDouble() * 2 - 1);
+    }
+
     public double Dot(Vector v)
     {
         return X * v.X + Y * v.Y + Z * v.Z;
+    }
+
+    public bool SameDirection(Vector other)
+    {
+        return Direction().Dot(other.Direction()) > 0;
     }
 
     public Vector Cross(Vector v)
@@ -63,5 +77,22 @@ public readonly struct Vector
     public double LengthSquared => X * X + Y * Y + Z * Z;
 
     public double Length => Math.Sqrt(LengthSquared);
+
+    public static Vector RandomPointInUnitSphere()
+    {
+        while (true)
+        {
+            var r = Vector.Random();
+            if (r.Length < 1)
+            {
+                return r;
+            }
+        }
+    }
+
+    public static Vector RandomPointOnUnitSphereSurface()
+    {
+        return RandomPointInUnitSphere().Direction();
+    }
 
 }
