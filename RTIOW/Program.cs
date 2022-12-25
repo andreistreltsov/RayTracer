@@ -1,32 +1,16 @@
 ﻿using RTIOW;
 
-const int imageWidth = 3840;
+const int imageWidth = 800;
 const double aspectRatio = 16.0 / 9.0;
 const int imageHeight = (int)(imageWidth / aspectRatio);
 const int numRowsPerRenderJob = 30;
 
 var origin = new Vector(0, 0, 0);
 var camera = new Camera(origin, aspectRatio);
-var numSamplesPerPixel = 32;
+const int numSamplesPerPixel = 32;
 
-var world = new World(
-    new List<Entity>
-    {
-        new Sphere(new Vector(0, -100.5, -1), 100, 
-            new Diffuse(new Color(0.3, 0.3, 0.3))),
-        
-        new Sphere(new Vector(0, 0, -1), 0.5, 
-                    new Diffuse(new Color(0.7, 0.3, 0.3))),
-        
-        new Sphere(new Vector(-1, 0, -1), 0.5, 
-                            new Metal(new Color(0.8, 0.8, 0.8), 0.1)),
-        
-        new Sphere(new Vector(1, 0, -1), 0.5, 
-                                    new Metal(new Color(0.8, 0.6, 0.2), 0.9)),
-    });
-
+var world = Setup.MakeWorld();
 var random = new Random();
-
 var image = new Image(imageHeight, imageWidth, numSamplesPerPixel);
 
 IEnumerable<int> Jobs()
@@ -56,7 +40,6 @@ void RenderRows(int startRow, int numRows)
                 color += camera.GetRay(u, v).Color(world, 0);
             }
 
-            // TODO: Most likely a data race here, since different jobs may compute overlapping pixels due to AA.
             image.AddPixel(j, i, color);
         }
     }
@@ -65,8 +48,8 @@ void RenderRows(int startRow, int numRows)
 Parallel.ForEach(Jobs(), startRow =>
 {
     RenderRows(startRow, numRowsPerRenderJob);
-    numJobsLeft -= 1; // TODO: Data race
-    Console.Error.WriteLine($"Jobs remaining: {numJobsLeft}");
+    // Data race, but we don't care since it's only a progress indicator
+    Console.Error.WriteLine($"Jobs remaining: {--numJobsLeft}");
 });
 
 image.Write();

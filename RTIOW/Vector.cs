@@ -6,7 +6,7 @@ public readonly struct Vector
     public readonly double Y;
     public readonly double Z;
 
-    private static Random random = new Random();
+    private static readonly Random random = new();
 
     public Vector(double x, double y, double z) => (X, Y, Z) = (x, y, z);
 
@@ -82,7 +82,7 @@ public readonly struct Vector
     {
         while (true)
         {
-            var r = Vector.Random();
+            var r = Random();
             if (r.Length < 1)
             {
                 return r;

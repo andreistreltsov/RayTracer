@@ -36,7 +36,7 @@ public class Ray
                 return RenderBackground();
             case HitResult.Hit hit:
                 // compute the diffuse reflected ray and get its color
-                var (reflectedRay, attenuation, scatter) = hit.material.ScatterRay(this, hit);
+                var (reflectedRay, attenuation, scatter) = hit.Material.ScatterRay(this, hit);
                 if (scatter)
                 {
                     return attenuation * reflectedRay.Color(world, depth + 1);
