@@ -1,28 +1,32 @@
 namespace RTIOW;
 
-class Camera
+public class Camera
 {
     // Viewport dimensions in vector form
     private readonly Vector horizontal;
     private readonly Vector vertical;
+
     
     // Position vectors
-    private readonly Vector origin;
+    private readonly Vector lookFrom;
     private readonly Vector viewportLowerLeftCorner;
 
-    public Camera(Vector origin, double aspectRatio)
+    public Camera(Vector lookFrom, Vector lookAt, Vector viewUp, double aspectRatio, double verticalFieldOfView)
     {
-        this.origin = origin;
-        const double viewportHeight = 2.0;
-        const double focalLength = 1.0;
+        this.lookFrom = lookFrom;
+
+        var viewportHeight = 2.0 * Math.Tan(verticalFieldOfView/2.0) ;
         var viewportWidth = aspectRatio * viewportHeight;
-        horizontal = new Vector(viewportWidth, 0, 0);
-        vertical = new Vector(0, viewportHeight, 0);
-        viewportLowerLeftCorner = origin - (horizontal / 2) - (vertical / 2) - new Vector(0, 0, focalLength);
+
+        var w = (lookFrom - lookAt).Direction();
+        var u = viewUp.Cross(w).Direction();
+        var v = w.Cross(u);
+        (horizontal, vertical) = (viewportWidth * u, viewportHeight * v);
+        viewportLowerLeftCorner = lookFrom - (horizontal / 2) - (vertical / 2) - w;
     }
 
-    public Ray GetRay(double u, double v)
+    public Ray GetRay(double s, double t)
     {
-        return new Ray(origin, viewportLowerLeftCorner + horizontal * u + vertical * v - origin);
+        return new Ray(lookFrom, viewportLowerLeftCorner + horizontal * s + vertical * t - lookFrom);
     }
 }

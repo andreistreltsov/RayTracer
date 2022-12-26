@@ -21,14 +21,14 @@ public class Ray
     }
     
 
-    public Color Color(World world, int depth)
+    public Color Color(Scene scene, int depth=0)
     {
         if (depth >= MaxDepth)
         {
             return new Color();
         }
         
-        var hitResult = world.ComputeHit(this, 0.001, double.MaxValue);
+        var hitResult = scene.ComputeHit(this, 0.001, double.MaxValue);
 
         switch (hitResult)
         {
@@ -39,7 +39,7 @@ public class Ray
                 var (reflectedRay, attenuation, scatter) = hit.Material.ScatterRay(this, hit);
                 if (scatter)
                 {
-                    return attenuation * reflectedRay.Color(world, depth + 1);
+                    return attenuation * reflectedRay.Color(scene, depth + 1);
                 }
                 return new Color();
             default:

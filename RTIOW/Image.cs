@@ -1,16 +1,8 @@
 namespace RTIOW;
 
-class Image
+static class Image
 {
     private const int MaxColor = 255;
-    private readonly Color[,] pixels;
-    private readonly int numSamplesPerPixel;
-    
-    public Image(int height, int width, int numSamplesPerPixel)
-    {
-        this.numSamplesPerPixel = numSamplesPerPixel;
-        pixels = new Color[height, width];
-    }
 
     private static double Clamp(double x)
     {
@@ -24,32 +16,16 @@ class Image
         };
     }
     
-    private int Height => pixels.GetLength(0);
-    private int Width => pixels.GetLength(1);
-
-    public void AddPixel(int row, int col, Color color)
+    public static void WriteHeader(StreamWriter writer, int height, int width)
     {
-        pixels[row, col] = color;
-    }
-    
-    public void Write()
-    {
-        Console.WriteLine("P3");
-        Console.WriteLine($"{Width} {Height}");
-        Console.WriteLine(MaxColor);
-        
-        for (var j = Height - 1; j >= 0; j--)
-        {
-            for (var i = 0; i < Width; i++)
-            {
-                WritePixel(pixels[j,i]/numSamplesPerPixel);
-            }
-        }
+        writer.WriteLine("P3");
+        writer.WriteLine($"{width} {height}");
+        writer.WriteLine(MaxColor);
     }
 
-    private static void WritePixel(Color pixel)
+    public static void WritePixel(StreamWriter writer, Color color)
     {
-        pixel = pixel.GammaCorrect2(); 
-        Console.WriteLine($"{(int)((MaxColor+1)*Clamp(pixel.R))} {(int)((MaxColor+1)*Clamp(pixel.G))} {(int)((MaxColor+1) * Clamp(pixel.B))}");
+        var pixel = color.GammaCorrect2(); 
+        writer.WriteLine($"{(int)((MaxColor+1)*Clamp(pixel.R))} {(int)((MaxColor+1)*Clamp(pixel.G))} {(int)((MaxColor+1) * Clamp(pixel.B))}");
     }
 }

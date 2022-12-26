@@ -1,10 +1,10 @@
 namespace RTIOW;
 
-public class World
+public class Scene
 {
     private readonly List<Entity> entities = new();
 
-    public World(IEnumerable<Entity> entities)
+    public Scene(IEnumerable<Entity> entities)
     {
         this.entities.AddRange(entities);
     }
